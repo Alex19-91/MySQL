@@ -65,26 +65,13 @@ select name_of_department, count(*) as trips_in_ufa from departments where id in
 	where year(date_of_trip) = 2020 and  city = 'Ufa' ) group by name_of_department HAVING trips_in_ufa > 10
 ;
 /*
-2. Вывести список сотрудников, подразделение и его руководителя, которые в 2019-2020 году
-были в заграничных командировках, и у которых заканчивается загран паспорт в 2020 году.
-*/
 
-select name, name_of_department, name_of_chef from departments right join employees on departments.id = employees.dep_name_id
-where year(passport_till) = 2020 and departments.id in(
-	select employee_id from trips left join cities on trips.city_id = cities.id 
-	where is_foreign = 1 and (year(date_of_trip) = 2019 or year(date_of_trip) = 2020))
-	;
 /*
-3. Найти подразделение, чьи сотрудники, пришедшие на предприятие в 2020 году и не
-уволившиеся в настоящее время
-a) были больше всего в командировках
+2. Найти подразделение, чьи сотрудники, пришедшие на предприятие в 2020 году и не
+уволившиеся в настоящее время никогда не были в командировках
+
 */
 
-select name_of_department, count(name) as number_trips from departments right join employees on departments.id = employees.dep_name_id
-where year(hired_in) = 2020 and is_fired = 0 and employees.id  in(
-	select employee_id from trips) group by name_of_department  order by number_trips;
-
--- б) никогда не были в командировках
 
 select name_of_department from departments right join employees on departments.id = employees.dep_name_id
 where year(hired_in) = 2020 and is_fired = 0 and employees.id not in(
